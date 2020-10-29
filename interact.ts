@@ -10,7 +10,7 @@ declare module "puppeteer" {
 }
 
 let isRunning = false;
-const debuggingMode = true;
+const debuggingMode = process.env.Debugging;
 const url = process.env.Url;
 
 const userNameInput = "input[name=email]";
@@ -28,7 +28,7 @@ export const interactWithPage = async (req, res) => {
 
   const browser = await puppeteer.launch({
     executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
-    headless: !debuggingMode,
+    headless: debuggingMode ? false : true,
   });
 
   const page = await browser.newPage();
