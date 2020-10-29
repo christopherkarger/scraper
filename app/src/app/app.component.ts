@@ -28,14 +28,15 @@ export class AppComponent {
   }
 
   login(): void {
-    this.interactingDone = false;
-
     if (!this.formGroup.valid) {
       this.error = "Bitte fülle Usernamen und Passwort aus!";
       return;
     }
 
+    this.error = undefined;
     this.interacting = true;
+    this.interactingDone = false;
+
     this.httpClient
       .post("api/interact", {
         username: this.usernameControl.value,
@@ -44,7 +45,6 @@ export class AppComponent {
       .subscribe({
         next: (res) => {
           console.log("DONE");
-          this.error = undefined;
           this.interacting = false;
           this.interactingDone = true;
         },
