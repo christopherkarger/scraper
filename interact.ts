@@ -1,5 +1,7 @@
 import * as puppeteer from "puppeteer";
 //const puppeteer = require("puppeteer");
+import * as isPi from "detect-rpi";
+//const isPi = require("detect-rpi");
 
 declare module "puppeteer" {
   export interface Page {
@@ -16,18 +18,19 @@ const passwordInput = "input[name=password]";
 const loginButton = "button[type=submit]";
 
 export const interactWithPage = async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
   if (isRunning) {
     return;
   }
 
+  const username = req.body.username;
+  const password = req.body.password;
   isRunning = true;
+
   const browser = await puppeteer.launch({
-    //executablePath: "/usr/bin/chromium-browser",
+    executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
     headless: !debuggingMode,
   });
+
   const page = await browser.newPage();
 
   const tryToSelect = async (s: string) => {
