@@ -37,7 +37,7 @@ export class AppComponent {
 
     this.interacting = true;
     this.httpClient
-      .post("/api/interact", {
+      .post("api/interact", {
         username: this.usernameControl.value,
         password: this.passwordControl.value,
       })
