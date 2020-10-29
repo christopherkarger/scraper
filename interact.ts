@@ -75,7 +75,7 @@ export const interactWithPage = async (req, res) => {
   const l = ".collection-detail__add-snip";
   await selectAndClick(l);
 
-  await page.waitForTimeout(1000 * 60 * 5);
+  await page.waitForTimeout(1000 * 60 * 1);
 
   // Make Screenshot
   await page.screenshot({ path: "example.png" });
