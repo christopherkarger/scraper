@@ -27,6 +27,7 @@ export const interactWithPage = async (req, res) => {
   }
 
   isRunning = true;
+  res.send({});
 
   const browser = await puppeteer.launch({
     executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
@@ -40,7 +41,6 @@ export const interactWithPage = async (req, res) => {
       const selected = await page.waitForSelector(s);
       return selected;
     } catch (err) {
-      res.status(500).send(`could not select ${s}`);
       throw new Error(`could not select ${s}`);
     }
   };
@@ -64,7 +64,6 @@ export const interactWithPage = async (req, res) => {
   try {
     await page.waitForNavigation({ waitUntil: "networkidle0" });
   } catch (err) {
-    res.status(500).send(`could not login`);
     throw new Error("could not login");
   }
   // ----------------------------------------
@@ -86,6 +85,4 @@ export const interactWithPage = async (req, res) => {
   // Close Browser
   await browser.close();
   isRunning = false;
-
-  res.send({});
 };
