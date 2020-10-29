@@ -24,7 +24,10 @@ export const interactWithPage = async (req, res) => {
   }
 
   isRunning = true;
-  const browser = await puppeteer.launch({ headless: !debuggingMode });
+  const browser = await puppeteer.launch({
+    //executablePath: "/usr/bin/chromium-browser",
+    headless: !debuggingMode,
+  });
   const page = await browser.newPage();
 
   const tryToSelect = async (s: string) => {
