@@ -15,7 +15,6 @@ import {
 export class AppComponent {
   error?: string;
   interacting = false;
-  interactingDone = false;
   formGroup: FormGroup;
   usernameControl = new FormControl("", Validators.required);
   passwordControl = new FormControl("", Validators.required);
@@ -34,8 +33,7 @@ export class AppComponent {
     }
 
     this.error = undefined;
-    this.interacting = true;
-    this.interactingDone = false;
+    this.interacting = false;
 
     this.httpClient
       .post("api/interact", {
@@ -45,13 +43,10 @@ export class AppComponent {
       .subscribe({
         next: (res) => {
           console.log("DONE");
-          this.interacting = false;
-          this.interactingDone = true;
+          this.interacting = true;
         },
         error: (err: HttpErrorResponse) => {
           this.error = err.error;
-          this.interacting = false;
-          this.interactingDone = false;
         },
       });
   }
