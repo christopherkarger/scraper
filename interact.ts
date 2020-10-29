@@ -12,18 +12,20 @@ declare module "puppeteer" {
 let isRunning = false;
 const debuggingMode = process.env.Debugging;
 const url = process.env.Url;
-
 const userNameInput = "input[name=email]";
 const passwordInput = "input[name=password]";
 const loginButton = "button[type=submit]";
 
 export const interactWithPage = async (req, res) => {
-  if (isRunning) {
+  const username = req.body.username;
+  const password = req.body.password;
+  const accounts = [process.env.Accounts];
+
+  if (isRunning || !accounts.includes(username)) {
+    res.status(500).send(`interacting rejected`);
     return;
   }
 
-  const username = req.body.username;
-  const password = req.body.password;
   isRunning = true;
 
   const browser = await puppeteer.launch({
@@ -74,7 +76,7 @@ export const interactWithPage = async (req, res) => {
   const l = ".collection-detail__add-snip";
   await selectAndClick(l);
 
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000 * 60 * 5);
 
   // Make Screenshot
   await page.screenshot({ path: "example.png" });
