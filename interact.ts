@@ -22,7 +22,7 @@ export const interactWithPage = async (req, res) => {
   const accounts = [process.env.Accounts];
 
   if (isRunning || !accounts.includes(username)) {
-    res.status(500).send(`interacting rejected`);
+    res.status(500).send(`interacting rejected - is running: ${isRunning}`);
     return;
   }
 
