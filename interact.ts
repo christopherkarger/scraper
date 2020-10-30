@@ -44,7 +44,13 @@ export const interactWithPage = async (req, res) => {
 
     page = await browser.newPage();
   } catch (err) {
-    res.status(500).send(`chromium opening failed isPi: ${isPi()}`);
+    res
+      .status(500)
+      .send(
+        `chromium opening failed isPi: ${isPi()} - ${
+          debuggingMode ? false : true
+        }`
+      );
     return;
   }
 
