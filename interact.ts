@@ -41,6 +41,7 @@ export const interactWithPage = async (req, res) => {
       const selected = await page.waitForSelector(s);
       return selected;
     } catch (err) {
+      isRunning = false;
       throw new Error(`could not select ${s}`);
     }
   };
@@ -64,6 +65,7 @@ export const interactWithPage = async (req, res) => {
   try {
     await page.waitForNavigation({ waitUntil: "networkidle0" });
   } catch (err) {
+    isRunning = false;
     throw new Error("could not login");
   }
   // ----------------------------------------
