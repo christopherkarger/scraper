@@ -38,11 +38,16 @@ export const interactWithPage = async (req, res) => {
       executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
       headless: debuggingMode === "true",
     });
-
+  } catch (err) {
+    isRunning = false;
+    res.status(500).send("chromium launching failed");
+    throw new Error("chromium launching failed");
+  }
+  try {
     page = await browser.newPage();
   } catch (err) {
     isRunning = false;
-    res.status(500).send(err);
+    res.status(500).send("chromium opening failed");
     throw new Error("chromium opening failed");
   }
 
