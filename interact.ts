@@ -19,6 +19,8 @@ const passwordInput = "input[name=password]";
 const loginButton = "button[type=submit]";
 
 export const interactWithPage = async (req, res) => {
+  let browser: puppeteer.Browser;
+  let page: puppeteer.Page;
   const username = req.body.username;
   const password = req.body.password;
   const accounts = process.env.Accounts.split(",");
@@ -34,12 +36,21 @@ export const interactWithPage = async (req, res) => {
 
   //res.send({});
 
-  const browser = await puppeteer.launch({
-    executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
-    headless: debuggingMode ? false : true,
-  });
+  try {
+    browser = await puppeteer.launch({
+      executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
+      headless: debuggingMode ? false : true,
+    });
 
-  const page = await browser.newPage();
+    page = await browser.newPage();
+  } catch (err) {
+    res.status(500).send(`chromium opening failed isPi: ${isPi()}`);
+    return;
+  }
+
+  if (!page || !browser) {
+    return;
+  }
 
   const tryToSelect = async (s: string) => {
     try {
