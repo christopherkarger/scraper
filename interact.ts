@@ -31,7 +31,7 @@ export const interactWithPage = async (req, res) => {
 
   isRunning = true;
 
-  //res.send({});
+  res.send({});
 
   try {
     browser = await puppeteer.launch({
@@ -40,7 +40,6 @@ export const interactWithPage = async (req, res) => {
     });
   } catch (err) {
     isRunning = false;
-    res.status(500).send("chromium launching failed");
     throw new Error(`chromium launching failed: debug ${debuggingMode}`);
   }
   try {
@@ -90,7 +89,6 @@ export const interactWithPage = async (req, res) => {
   try {
     await page.waitForNavigation({ waitUntil: "networkidle0" });
   } catch (err) {
-    await browser.close();
     await exit();
     throw new Error("could not login");
   }
