@@ -39,7 +39,7 @@ export const interactWithPage = async (req, res) => {
   try {
     browser = await puppeteer.launch({
       executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
-      headless: debuggingMode ? false : true,
+      headless: debuggingMode === "true",
     });
 
     page = await browser.newPage();
