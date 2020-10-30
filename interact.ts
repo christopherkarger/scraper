@@ -31,7 +31,8 @@ export const interactWithPage = async (req, res) => {
   console.log("START INTERACTING");
 
   isRunning = true;
-  res.send({});
+
+  //res.send({});
 
   const browser = await puppeteer.launch({
     executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
@@ -95,6 +96,10 @@ export const interactWithPage = async (req, res) => {
   // Close Browser
   await browser.close();
   console.log("STOP INTERACTING, EVERYTHING WENT FINE");
-  sendEmail("👍 Hallo, alles erledigt! 👍");
   isRunning = false;
+  try {
+    sendEmail("👍 Hallo, alles erledigt! 👍");
+  } catch (err) {
+    res.status(500).send(`Email error send`);
+  }
 };
