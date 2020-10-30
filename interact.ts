@@ -26,6 +26,8 @@ export const interactWithPage = async (req, res) => {
     return;
   }
 
+  console.log("START INTERACTING");
+
   isRunning = true;
   res.send({});
 
@@ -86,5 +88,6 @@ export const interactWithPage = async (req, res) => {
 
   // Close Browser
   await browser.close();
+  console.log("STOP INTERACTING");
   isRunning = false;
 };
