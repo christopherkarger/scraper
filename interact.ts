@@ -19,22 +19,14 @@ const passwordInput = "input[name=password]";
 const loginButton = "button[type=submit]";
 
 export const interactWithPage = async (req, res) => {
-  try {
-    sendEmail("👍 Hallo, alles erledigt! 👍");
-  } catch (err) {
-    res.status(500).send(`Email error send`);
-  }
-
-  return;
-
   const username = req.body.username;
   const password = req.body.password;
   const accounts = process.env.Accounts.split(",");
 
-  if (isRunning || !accounts.includes(username)) {
-    res.status(500).send(`interacting rejected - is running: ${isRunning}`);
-    return;
-  }
+  // if (isRunning || !accounts.includes(username)) {
+  //   res.status(500).send(`interacting rejected - is running: ${isRunning}`);
+  //   return;
+  // }
 
   console.log("START INTERACTING");
 
@@ -56,6 +48,7 @@ export const interactWithPage = async (req, res) => {
     } catch (err) {
       await browser.close();
       isRunning = false;
+      res.status(500).send(`selecting failed`);
       sendEmail(`💩 Select Error ${s} 💩`);
       throw new Error(`could not select ${s}`);
     }
@@ -67,15 +60,19 @@ export const interactWithPage = async (req, res) => {
   };
 
   // Login process
-  await page.goto(url, { waitUntil: "networkidle0" });
+  try {
+    await page.goto(url, { waitUntil: "networkidle0" });
 
-  await tryToSelect(userNameInput);
-  await page.type(userNameInput, username);
+    await tryToSelect(userNameInput);
+    await page.type(userNameInput, username);
 
-  await tryToSelect(passwordInput);
-  await page.type(passwordInput, password);
+    await tryToSelect(passwordInput);
+    await page.type(passwordInput, password);
 
-  await selectAndClick(loginButton);
+    await selectAndClick(loginButton);
+  } catch (err) {
+    res.status(500).send(`Login process failed`);
+  }
 
   try {
     await page.waitForNavigation({ waitUntil: "networkidle0" });
@@ -88,16 +85,20 @@ export const interactWithPage = async (req, res) => {
   // ----------------------------------------
 
   // Interact with page
-  const m = ".collections-sidebar__items li:nth-child(2) button";
-  await selectAndClick(m);
+  try {
+    const m = ".collections-sidebar__items li:nth-child(2) button";
+    await selectAndClick(m);
 
-  const l = ".collection-detail__add-snip";
-  await selectAndClick(l);
+    const l = ".collection-detail__add-snip";
+    await selectAndClick(l);
 
-  //await page.waitForTimeout(1000 * 60 * 1);
+    //await page.waitForTimeout(1000 * 60 * 1);
 
-  // Make Screenshot
-  await page.screenshot({ path: "example.png" });
+    // Make Screenshot
+    await page.screenshot({ path: "example.png" });
+  } catch (err) {
+    res.status(500).send(`interacting failed`);
+  }
 
   // ----------------------------------------
 
@@ -108,6 +109,6 @@ export const interactWithPage = async (req, res) => {
   try {
     sendEmail("👍 Hallo, alles erledigt! 👍");
   } catch (err) {
-    res.status(500).send(`Email error send`);
+    throw new Error("Email sending Error");
   }
 };
