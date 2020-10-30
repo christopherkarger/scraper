@@ -1,8 +1,5 @@
 import * as puppeteer from "puppeteer";
-//const puppeteer = require("puppeteer");
 import * as isPi from "detect-rpi";
-//const isPi = require("detect-rpi");
-
 import { sendEmail } from "./send-email";
 
 declare module "puppeteer" {
@@ -12,23 +9,23 @@ declare module "puppeteer" {
 }
 
 let isRunning = false;
-const debuggingMode = process.env.Debugging;
-const url = process.env.Url;
-const userNameInput = "input[name=email]";
-const passwordInput = "input[name=password]";
-const loginButton = "button[type=submit]";
 
 export const interactWithPage = async (req, res) => {
   let browser: puppeteer.Browser;
   let page: puppeteer.Page;
+  const debuggingMode = process.env.Debugging;
+  const url = process.env.Url;
+  const userNameInput = "input[name=email]";
+  const passwordInput = "input[name=password]";
+  const loginButton = "button[type=submit]";
   const username = req.body.username;
   const password = req.body.password;
   const accounts = process.env.Accounts.split(",");
 
-  // if (isRunning || !accounts.includes(username)) {
-  //   res.status(500).send(`interacting rejected - is running: ${isRunning}`);
-  //   return;
-  // }
+  if (isRunning || !accounts.includes(username)) {
+    res.status(500).send(`interacting rejected - is running: ${isRunning}`);
+    return;
+  }
 
   console.log("START INTERACTING");
 
@@ -44,29 +41,26 @@ export const interactWithPage = async (req, res) => {
 
     page = await browser.newPage();
   } catch (err) {
-    res
-      .status(500)
-      .send(
-        `chromium opening failed isPi: ${isPi()} - ${
-          debuggingMode ? false : true
-        }`
-      );
-    return;
+    isRunning = false;
+    res.status(500).send(`chromium opening failed isPi: ${isPi()}`);
+    throw new Error("chromium opening failed");
   }
 
   if (!page || !browser) {
     return;
   }
 
+  const exit = async () => {
+    isRunning = false;
+    await browser.close();
+  };
+
   const tryToSelect = async (s: string) => {
     try {
       const selected = await page.waitForSelector(s);
       return selected;
     } catch (err) {
-      await browser.close();
-      isRunning = false;
-      res.status(500).send(`selecting failed`);
-      sendEmail(`💩 Select Error ${s} 💩`);
+      await exit();
       throw new Error(`could not select ${s}`);
     }
   };
@@ -79,24 +73,20 @@ export const interactWithPage = async (req, res) => {
   // Login process
   try {
     await page.goto(url, { waitUntil: "networkidle0" });
-
     await tryToSelect(userNameInput);
     await page.type(userNameInput, username);
-
     await tryToSelect(passwordInput);
     await page.type(passwordInput, password);
-
     await selectAndClick(loginButton);
   } catch (err) {
-    res.status(500).send(`Login process failed`);
+    await exit();
   }
 
   try {
     await page.waitForNavigation({ waitUntil: "networkidle0" });
   } catch (err) {
     await browser.close();
-    isRunning = false;
-    sendEmail("💩 Login Error 💩");
+    await exit();
     throw new Error("could not login");
   }
   // ----------------------------------------
@@ -114,15 +104,14 @@ export const interactWithPage = async (req, res) => {
     // Make Screenshot
     await page.screenshot({ path: "example.png" });
   } catch (err) {
-    res.status(500).send(`interacting failed`);
+    await exit();
   }
 
   // ----------------------------------------
 
-  // Close Browser
-  await browser.close();
+  // Exit
   console.log("STOP INTERACTING, EVERYTHING WENT FINE");
-  isRunning = false;
+  await exit();
   try {
     sendEmail("👍 Hallo, alles erledigt! 👍");
   } catch (err) {
