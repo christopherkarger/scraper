@@ -23,9 +23,6 @@ export const interactWithPage = async (req, res) => {
   const password = req.body.password;
   const accounts = process.env.Accounts.split(",");
 
-  sendEmail();
-  return;
-
   if (isRunning || !accounts.includes(username)) {
     res.status(500).send(`interacting rejected - is running: ${isRunning}`);
     return;
@@ -50,6 +47,7 @@ export const interactWithPage = async (req, res) => {
     } catch (err) {
       await browser.close();
       isRunning = false;
+      sendEmail(`💩 Select Error ${s} 💩`);
       throw new Error(`could not select ${s}`);
     }
   };
@@ -75,6 +73,7 @@ export const interactWithPage = async (req, res) => {
   } catch (err) {
     await browser.close();
     isRunning = false;
+    sendEmail("💩 Login Error 💩");
     throw new Error("could not login");
   }
   // ----------------------------------------
@@ -96,5 +95,6 @@ export const interactWithPage = async (req, res) => {
   // Close Browser
   await browser.close();
   console.log("STOP INTERACTING, EVERYTHING WENT FINE");
+  sendEmail("👍 Hallo, alles erledigt! 👍");
   isRunning = false;
 };
