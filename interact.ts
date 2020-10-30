@@ -3,6 +3,8 @@ import * as puppeteer from "puppeteer";
 import * as isPi from "detect-rpi";
 //const isPi = require("detect-rpi");
 
+import { sendEmail } from "./send-email";
+
 declare module "puppeteer" {
   export interface Page {
     waitForTimeout(duration: number): Promise<void>;
@@ -19,7 +21,10 @@ const loginButton = "button[type=submit]";
 export const interactWithPage = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-  const accounts = [process.env.Accounts];
+  const accounts = process.env.Accounts.split(",");
+
+  sendEmail();
+  return;
 
   if (isRunning || !accounts.includes(username)) {
     res.status(500).send(`interacting rejected - is running: ${isRunning}`);
