@@ -41,7 +41,7 @@ export const interactWithPage = async (req, res) => {
   } catch (err) {
     isRunning = false;
     res.status(500).send("chromium launching failed");
-    throw new Error("chromium launching failed");
+    throw new Error(`chromium launching failed: debug ${debuggingMode}`);
   }
   try {
     page = await browser.newPage();
