@@ -42,7 +42,7 @@ export const interactWithPage = async (req, res) => {
     page = await browser.newPage();
   } catch (err) {
     isRunning = false;
-    res.status(500).send(`chromium opening failed isPi: ${isPi()}`);
+    res.status(500).send(err);
     throw new Error("chromium opening failed");
   }
 
