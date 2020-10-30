@@ -19,6 +19,14 @@ const passwordInput = "input[name=password]";
 const loginButton = "button[type=submit]";
 
 export const interactWithPage = async (req, res) => {
+  try {
+    sendEmail("👍 Hallo, alles erledigt! 👍");
+  } catch (err) {
+    res.status(500).send(`Email error send`);
+  }
+
+  return;
+
   const username = req.body.username;
   const password = req.body.password;
   const accounts = process.env.Accounts.split(",");
