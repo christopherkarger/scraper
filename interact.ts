@@ -65,6 +65,7 @@ export const interactWithPage = async (req, res) => {
       return selected;
     } catch (err) {
       await exit();
+      sendEmail("💩💩 Selecting failed 💩💩");
       throw new Error(`could not select ${s}`);
     }
   };
@@ -95,20 +96,17 @@ export const interactWithPage = async (req, res) => {
   // ----------------------------------------
 
   // Interact with page
-  try {
-    const m = ".collections-sidebar__items li:nth-child(2) button";
-    await selectAndClick(m);
 
-    const l = ".collection-detail__add-snip";
-    await selectAndClick(l);
+  const m = ".collections-sidebar__items li:nth-child(2) button";
+  await selectAndClick(m);
 
-    //await page.waitForTimeout(1000 * 60 * 1);
+  const l = ".collection-detail__add-snip";
+  await selectAndClick(l);
 
-    // Make Screenshot
-    await page.screenshot({ path: "example.png" });
-  } catch (err) {
-    await exit();
-  }
+  //await page.waitForTimeout(1000 * 60 * 1);
+
+  // Make Screenshot
+  await page.screenshot({ path: "example.png" });
 
   // ----------------------------------------
 
