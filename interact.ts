@@ -36,8 +36,6 @@ export const interactWithPage = async (req, res) => {
 
   isRunning = true;
 
-  res.send({});
-
   try {
     browser = await puppeteer.launch({
       executablePath: isPi() ? "/usr/bin/chromium-browser" : undefined,
@@ -45,11 +43,16 @@ export const interactWithPage = async (req, res) => {
     });
   } catch (err) {
     isRunning = false;
+    res.status(500).send(err);
     sendEmail(
-      `💩💩 Konnte Chromium nicht öffnen - ${debuggingMode !== "true"} 💩💩`
+      `💩💩 Konnte Chromium nicht öffnen - ${debuggingMode !== "true"} - ${
+        isPi() ? "/usr/bin/chromium-browser" : undefined
+      } 💩💩`
     );
     throw new Error(`Chromium launching failed`);
   }
+
+  res.send({});
 
   page = await browser.newPage();
 
