@@ -46,6 +46,7 @@ export const interactWithPage = async (req, res) => {
       `💩💩 Konnte Chromium nicht öffnen - 
         debuggingMode: ${debuggingMode !== "true"} - 
         isPi: ${isPi() ? "/usr/bin/chromium-browser" : undefined} -
+        puppe: ${puppeteer} - 
         error: ${err}
       💩💩`
     );
