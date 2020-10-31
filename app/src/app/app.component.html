@@ -21,7 +21,11 @@
     </p>
   </ng-container>
 
-  <ng-container *ngIf="error">
-    <p>{{ error }}</p>
+  <ng-container *ngIf="error && error === 'interacting rejected'">
+    <p>Tut mir leid, für dich kann ich nichts zun!</p>
+  </ng-container>
+
+  <ng-container *ngIf="error && error === 'already running'">
+    <p>Ich arbeite gerade, versuche es später erneut!</p>
   </ng-container>
 </div>

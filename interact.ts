@@ -22,8 +22,13 @@ export const interactWithPage = async (req, res) => {
   const password = req.body.password;
   const accounts = process.env.Accounts.split(",");
 
-  if (isRunning || !accounts.includes(username)) {
-    res.status(500).send(`interacting rejected - is running: ${isRunning}`);
+  if (isRunning) {
+    res.status(500).send(`already running`);
+    return;
+  }
+
+  if (!accounts.includes(username)) {
+    res.status(500).send(`interacting rejected`);
     return;
   }
 
