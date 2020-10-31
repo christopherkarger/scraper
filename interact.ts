@@ -12,7 +12,6 @@ let isRunning = false;
 
 export const interactWithPage = async (req, res) => {
   let browser: puppeteer.Browser;
-  let page: puppeteer.Page;
   const debuggingMode = process.env.Debugging;
   const url = process.env.Url;
   const userNameInput = "input[name=email]";
@@ -43,7 +42,7 @@ export const interactWithPage = async (req, res) => {
     });
   } catch (err) {
     isRunning = false;
-    res.status(500).send(err);
+    res.status(500).send(`${browser}`);
     sendEmail(
       `💩💩 Konnte Chromium nicht öffnen - ${debuggingMode !== "true"} - ${
         isPi() ? "/usr/bin/chromium-browser" : undefined
@@ -54,9 +53,9 @@ export const interactWithPage = async (req, res) => {
 
   res.send({});
 
-  page = await browser.newPage();
+  const page = await browser.newPage();
 
-  if (!page || !browser) {
+  if (!browser) {
     return;
   }
 
