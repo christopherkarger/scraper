@@ -98,8 +98,6 @@ export const interactWithPage = async (req, res) => {
     throw new Error("Login failed");
   }
 
-  sendEmail("🤞 Alles klar, los gehts! 🤞");
-
   // ----------------------------------------
 
   // Interact with page
