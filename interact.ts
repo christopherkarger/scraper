@@ -34,6 +34,7 @@ export const interactWithPage = async (req, res) => {
   console.log("START INTERACTING");
 
   isRunning = true;
+  res.send({});
 
   try {
     browser = await puppeteer.launch({
@@ -45,8 +46,6 @@ export const interactWithPage = async (req, res) => {
     sendEmail(`💩💩 Konnte Chromium nicht öffnen - error: ${err}💩💩`);
     throw new Error(`Chromium launching failed`);
   }
-
-  res.send({});
 
   const page = await browser.newPage();
 
@@ -65,7 +64,7 @@ export const interactWithPage = async (req, res) => {
       return selected;
     } catch (err) {
       await exit();
-      sendEmail("💩💩 Oje ich konnte irgendetwas nicht ausführen! 💩💩");
+      sendEmail(`💩💩 Oje ich konnte - ${s} - nicht ausführen! 💩💩`);
       throw new Error(`could not select ${s}`);
     }
   };
