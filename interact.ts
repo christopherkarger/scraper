@@ -42,11 +42,12 @@ export const interactWithPage = async (req, res) => {
     });
   } catch (err) {
     isRunning = false;
-    res.status(500).send(`${browser}`);
     sendEmail(
-      `💩💩 Konnte Chromium nicht öffnen - ${debuggingMode !== "true"} - ${
-        isPi() ? "/usr/bin/chromium-browser" : undefined
-      } 💩💩`
+      `💩💩 Konnte Chromium nicht öffnen - 
+        debuggingMode: ${debuggingMode !== "true"} - 
+        isPi: ${isPi() ? "/usr/bin/chromium-browser" : undefined} -
+        error: ${err}
+      💩💩`
     );
     throw new Error(`Chromium launching failed`);
   }
