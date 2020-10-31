@@ -45,7 +45,7 @@ export const interactWithPage = async (req, res) => {
     });
   } catch (err) {
     isRunning = false;
-    sendEmail("💩💩 Konnte Chromium nicht öffnen 💩💩");
+    sendEmail(`💩💩 Konnte Chromium nicht öffnen - ${debuggingMode} 💩💩`);
     throw new Error(`Chromium launching failed`);
   }
 
