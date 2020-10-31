@@ -45,15 +45,11 @@ export const interactWithPage = async (req, res) => {
     });
   } catch (err) {
     isRunning = false;
-    throw new Error(`chromium launching failed: debug ${debuggingMode}`);
+    sendEmail("💩💩 Konnte Chromium nicht öffnen 💩💩");
+    throw new Error(`Chromium launching failed`);
   }
-  try {
-    page = await browser.newPage();
-  } catch (err) {
-    isRunning = false;
-    res.status(500).send("chromium opening failed");
-    throw new Error("chromium opening failed");
-  }
+
+  page = await browser.newPage();
 
   if (!page || !browser) {
     return;
@@ -70,7 +66,7 @@ export const interactWithPage = async (req, res) => {
       return selected;
     } catch (err) {
       await exit();
-      sendEmail("💩💩 Selecting failed 💩💩");
+      sendEmail("💩💩 Oje ich konnte irgendetwas nicht ausführen! 💩💩");
       throw new Error(`could not select ${s}`);
     }
   };
@@ -96,8 +92,12 @@ export const interactWithPage = async (req, res) => {
     await page.waitForNavigation({ waitUntil: "networkidle0" });
   } catch (err) {
     await exit();
-    throw new Error("could not login");
+    sendEmail("💩💩 Login fehlgeschlagen 💩💩");
+    throw new Error("Login failed");
   }
+
+  sendEmail("🤞 Alles klar, los gehts! 🤞");
+
   // ----------------------------------------
 
   // Interact with page
@@ -118,9 +118,5 @@ export const interactWithPage = async (req, res) => {
   // Exit
   console.log("STOP INTERACTING, EVERYTHING WENT FINE");
   await exit();
-  try {
-    sendEmail("👍 Hallo, alles erledigt! 👍");
-  } catch (err) {
-    throw new Error("Email sending Error");
-  }
+  sendEmail("👍 Hallo, alles erledigt! 👍");
 };

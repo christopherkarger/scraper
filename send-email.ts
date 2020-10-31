@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = (text: string) => {
+const mail = (text: string) => {
   const mailOptions = {
     from: process.env.Email,
     to: "karger1986@gmail.com",
@@ -22,4 +22,12 @@ export const sendEmail = (text: string) => {
       console.log("Email sent: " + info.response);
     }
   });
+};
+
+export const sendEmail = (text: string) => {
+  try {
+    mail(text);
+  } catch (err) {
+    throw new Error("Email sending Error");
+  }
 };
